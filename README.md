@@ -1,5 +1,18 @@
 # Flutter rendered by Go Server
 
+## How to run project
+
+Run the following in powershell to build flutter web
+
+```powershell
+.\scripts\build_web_app.ps1
+```
+
+Then start server by running
+
+```powershell
+.\scripts\run_server.ps1
+```
 
 ## Dirs
 
