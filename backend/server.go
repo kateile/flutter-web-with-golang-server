@@ -11,16 +11,16 @@ func main() {
 	port := os.Getenv("PORT")
 
 	if port == "" {
-		port = "9090"
+		port = "8282"
 	}
 
 	router := chi.NewRouter()
-	router.Use(func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/javascript")
-			next.ServeHTTP(w, r)
-		})
-	})
+	//router.Use(func(next http.Handler) http.Handler {
+	//	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	//		w.Header().Set("Content-Type", "application/javascript")
+	//		next.ServeHTTP(w, r)
+	//	})
+	//})
 	//Status router for testing if server is working
 	router.Get("/status", func(w http.ResponseWriter, r *http.Request) {
 		_, _ = w.Write([]byte("It is working!!!!!!!!!!!!!!!!!"))
@@ -31,6 +31,6 @@ func main() {
 
 	router.Handle("/*", http.StripPrefix("/", fs))
 
-	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
+	log.Printf("connect to http://localhost:%s/ for viewing flutter web", port)
 	log.Fatal(http.ListenAndServe("127.0.0.1:"+port, router))
 }
