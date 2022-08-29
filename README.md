@@ -2,14 +2,14 @@
 
 ## How to run project
 
-Run the following in powershell to build flutter web
+You can start server by running the following command
 
 ```powershell
-.\scripts\build_web_app.ps1
+cd backend
+go run server.go
 ```
 
-Then start server by running
-
+Or you can use PowerShell script
 ```powershell
 .\scripts\run_server.ps1
 ```

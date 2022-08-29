@@ -28,10 +28,14 @@ func main() {
 		_, _ = w.Write([]byte("It is working!!!!!!!!!!!!!!!!!"))
 	})
 
+	// SOLUTION 1
 	//fs := http.FileServer(http.Dir("web"))
 	//router.Handle("/*", http.StripPrefix("/", fs))
 
-	//Configuring frontend
+	// SOLUTION 2
+	//AnotherFileServer(router)
+
+	//SOLUTION 3
 	workDir, _ := os.Getwd()
 	filesDir := http.Dir(filepath.Join(workDir, "web"))
 	FileServer(router, "/", filesDir)
@@ -60,3 +64,17 @@ func FileServer(r chi.Router, path string, root http.FileSystem) {
 		fs.ServeHTTP(w, r)
 	})
 }
+
+// AnotherFileServer FileServer is serving static files.
+//func AnotherFileServer(router *chi.Mux) {
+//	root := "./web"
+//	fs := http.FileServer(http.Dir(root))
+//
+//	router.Get("/*", func(w http.ResponseWriter, r *http.Request) {
+//		if _, err := os.Stat(root + r.RequestURI); os.IsNotExist(err) {
+//			http.StripPrefix(r.RequestURI, fs).ServeHTTP(w, r)
+//		} else {
+//			fs.ServeHTTP(w, r)
+//		}
+//	})
+//}
