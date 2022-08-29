@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
+	"strings"
 )
 
 func main() {
@@ -26,11 +28,35 @@ func main() {
 		_, _ = w.Write([]byte("It is working!!!!!!!!!!!!!!!!!"))
 	})
 
+	//fs := http.FileServer(http.Dir("web"))
+	//router.Handle("/*", http.StripPrefix("/", fs))
+
 	//Configuring frontend
-	fs := http.FileServer(http.Dir("web"))
+	workDir, _ := os.Getwd()
+	filesDir := http.Dir(filepath.Join(workDir, "web"))
+	FileServer(router, "/", filesDir)
 
-	router.Handle("/*", http.StripPrefix("/", fs))
-
-	log.Printf("connect to http://localhost:%s/ for viewing flutter web", port)
+	log.Printf("connect to http://localhost:%s for viewing flutter web", port)
 	log.Fatal(http.ListenAndServe("127.0.0.1:"+port, router))
+}
+
+// FileServer conveniently sets up a http.FileServer handler to serve
+// static files from a http.FileSystem.
+func FileServer(r chi.Router, path string, root http.FileSystem) {
+	if strings.ContainsAny(path, "{}*") {
+		panic("FileServer does not permit any URL parameters.")
+	}
+
+	if path != "/" && path[len(path)-1] != '/' {
+		r.Get(path, http.RedirectHandler(path+"/", 301).ServeHTTP)
+		path += "/"
+	}
+	path += "*"
+
+	r.Get(path, func(w http.ResponseWriter, r *http.Request) {
+		rctx := chi.RouteContext(r.Context())
+		pathPrefix := strings.TrimSuffix(rctx.RoutePattern(), "/*")
+		fs := http.StripPrefix(pathPrefix, http.FileServer(root))
+		fs.ServeHTTP(w, r)
+	})
 }
