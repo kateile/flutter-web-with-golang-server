@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/go-chi/chi/v5"
 	"log"
+	"mime"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -28,6 +29,8 @@ func main() {
 		_, _ = w.Write([]byte("It is working!!!!!!!!!!!!!!!!!"))
 	})
 
+	FixMimeTypes()
+
 	// SOLUTION 1
 	//fs := http.FileServer(http.Dir("web"))
 	//router.Handle("/*", http.StripPrefix("/", fs))
@@ -42,6 +45,18 @@ func main() {
 
 	log.Printf("connect to http://localhost:%s for viewing flutter web", port)
 	log.Fatal(http.ListenAndServe("127.0.0.1:"+port, router))
+}
+
+func FixMimeTypes() {
+	err1 := mime.AddExtensionType(".js", "text/javascript")
+	if err1 != nil {
+		log.Printf("Error in mime js %s", err1.Error())
+	}
+
+	err2 := mime.AddExtensionType(".css", "text/css")
+	if err2 != nil {
+		log.Printf("Error in mime js %s", err2.Error())
+	}
 }
 
 // FileServer conveniently sets up a http.FileServer handler to serve
